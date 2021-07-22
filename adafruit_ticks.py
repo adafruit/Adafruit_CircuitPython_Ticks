@@ -74,7 +74,7 @@ except (ImportError, NameError):
             until a holiday."""
             return (_monotonic_ns() // 1_000_000) & _TICKS_MAX
 
-    except (ImportError, NameError):
+    except (ImportError, NameError, NotImplementedError):
         from time import monotonic as _monotonic
 
         def ticks_ms():
