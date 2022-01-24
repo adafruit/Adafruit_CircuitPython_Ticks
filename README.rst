@@ -3,7 +3,7 @@ Introduction
 
 
 .. image:: https://readthedocs.org/projects/adafruit-circuitpython-ticks/badge/?version=latest
-    :target: https://circuitpython.readthedocs.io/projects/ticks/en/latest/
+    :target: https://docs.circuitpython.org/projects/ticks/en/latest/
     :alt: Documentation Status
 
 
