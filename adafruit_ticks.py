@@ -57,7 +57,7 @@ except (ImportError, NameError):
 
         _monotonic_ns()  # Check that monotonic_ns is usable
 
-        def ticks_ms():
+        def ticks_ms() -> int:
             """Return the time in milliseconds since an unspecified moment,
             wrapping after 2**29ms.
 
@@ -77,7 +77,7 @@ except (ImportError, NameError):
     except (ImportError, NameError, NotImplementedError):
         from time import monotonic as _monotonic
 
-        def ticks_ms():
+        def ticks_ms() -> int:
             """Return the time in milliseconds since an unspecified moment,
             wrapping after 2**29ms.
 
@@ -95,12 +95,12 @@ except (ImportError, NameError):
             return int(_monotonic() * 1000) & _TICKS_MAX
 
 
-def ticks_add(ticks, delta):
+def ticks_add(ticks: int, delta: int) -> int:
     "Add a delta to a base number of ticks, performing wraparound at 2**29ms."
     return (ticks + delta) % _TICKS_PERIOD
 
 
-def ticks_diff(ticks1, ticks2):
+def ticks_diff(ticks1: int, ticks2: int) -> int:
     """Compute the signed difference between two ticks values,
     assuming that they are within 2**28 ticks"""
     diff = (ticks1 - ticks2) & _TICKS_MAX
@@ -108,7 +108,7 @@ def ticks_diff(ticks1, ticks2):
     return diff
 
 
-def ticks_less(ticks1, ticks2):
+def ticks_less(ticks1: int, ticks2: int) -> bool:
     """Return true iff ticks1 is less than ticks2,
     assuming that they are within 2**28 ticks"""
     return ticks_diff(ticks1, ticks2) < 0
