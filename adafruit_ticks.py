@@ -35,6 +35,9 @@ _TICKS_HALFPERIOD = const(_TICKS_PERIOD // 2)
 #
 #  - supervisor.ticks_ms is present.  This will be the case starting in CP7.0
 #
+#  - time.ticks_ms is present. This is the case for MicroPython & for the "unix
+#    port" of CircuitPython, used for some automated testing.
+#
 #  - time.monotonic_ns is present, and works.  This is the case on most
 #    Express boards in CP6.x, and most host computer versions of Python.
 #
@@ -52,30 +55,9 @@ _TICKS_HALFPERIOD = const(_TICKS_PERIOD // 2)
 try:
     from supervisor import ticks_ms  # pylint: disable=unused-import
 except (ImportError, NameError):
-    try:
-        from time import monotonic_ns as _monotonic_ns
+    import time
 
-        _monotonic_ns()  # Check that monotonic_ns is usable
-
-        def ticks_ms() -> int:
-            """Return the time in milliseconds since an unspecified moment,
-            wrapping after 2**29ms.
-
-            The wrap value was chosen so that it is always possible to add or
-            subtract two `ticks_ms` values without overflow on a board without
-            long ints (or without allocating any long integer objects, on
-            boards with long ints).
-
-            This ticks value comes from a low-accuracy clock internal to the
-            microcontroller, just like `time.monotonic`.  Due to its low
-            accuracy and the fact that it "wraps around" every few days, it is
-            intended for working with short term events like advancing an LED
-            animation, not for long term events like counting down the time
-            until a holiday."""
-            return (_monotonic_ns() // 1_000_000) & _TICKS_MAX
-
-    except (ImportError, NameError, NotImplementedError):
-        from time import monotonic as _monotonic
+    if _ticks_ms := getattr(time, "ticks_ms", None):
 
         def ticks_ms() -> int:
             """Return the time in milliseconds since an unspecified moment,
@@ -92,7 +74,50 @@ except (ImportError, NameError):
             intended for working with short term events like advancing an LED
             animation, not for long term events like counting down the time
             until a holiday."""
-            return int(_monotonic() * 1000) & _TICKS_MAX
+            return _ticks_ms() & _TICKS_MAX  # pylint: disable=not-callable
+
+    else:
+        try:
+            from time import monotonic_ns as _monotonic_ns
+
+            _monotonic_ns()  # Check that monotonic_ns is usable
+
+            def ticks_ms() -> int:
+                """Return the time in milliseconds since an unspecified moment,
+                wrapping after 2**29ms.
+
+                The wrap value was chosen so that it is always possible to add or
+                subtract two `ticks_ms` values without overflow on a board without
+                long ints (or without allocating any long integer objects, on
+                boards with long ints).
+
+                This ticks value comes from a low-accuracy clock internal to the
+                microcontroller, just like `time.monotonic`.  Due to its low
+                accuracy and the fact that it "wraps around" every few days, it is
+                intended for working with short term events like advancing an LED
+                animation, not for long term events like counting down the time
+                until a holiday."""
+                return (_monotonic_ns() // 1_000_000) & _TICKS_MAX
+
+        except (ImportError, NameError, NotImplementedError):
+            from time import monotonic as _monotonic
+
+            def ticks_ms() -> int:
+                """Return the time in milliseconds since an unspecified moment,
+                wrapping after 2**29ms.
+
+                The wrap value was chosen so that it is always possible to add or
+                subtract two `ticks_ms` values without overflow on a board without
+                long ints (or without allocating any long integer objects, on
+                boards with long ints).
+
+                This ticks value comes from a low-accuracy clock internal to the
+                microcontroller, just like `time.monotonic`.  Due to its low
+                accuracy and the fact that it "wraps around" every few days, it is
+                intended for working with short term events like advancing an LED
+                animation, not for long term events like counting down the time
+                until a holiday."""
+                return int(_monotonic() * 1000) & _TICKS_MAX
 
 
 def ticks_add(ticks: int, delta: int) -> int:
