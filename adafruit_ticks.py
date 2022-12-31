@@ -134,6 +134,6 @@ def ticks_diff(ticks1: int, ticks2: int) -> int:
 
 
 def ticks_less(ticks1: int, ticks2: int) -> bool:
-    """Return true if ticks1 is less than ticks2,
+    """Return true if ticks1 is before ticks2 and false otherwise,
     assuming that they are within 2**28 ticks"""
     return ticks_diff(ticks1, ticks2) < 0
