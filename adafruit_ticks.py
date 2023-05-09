@@ -50,7 +50,7 @@ _TICKS_HALFPERIOD = const(_TICKS_PERIOD // 2)
 #    ability to measure 1ms intervals after about 1 hour, and losing the
 #    ability to meausre 128ms intervals after 6 days.  The only solution is to
 #    either upgrade to a version with supervisor.ticks_ms, or to switch to a
-#    board with time.montonic_ns.
+#    board with time.monotonic_ns.
 
 try:
     from supervisor import ticks_ms  # pylint: disable=unused-import
