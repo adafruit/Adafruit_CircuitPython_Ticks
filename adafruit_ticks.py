@@ -122,6 +122,8 @@ except (ImportError, NameError):
 
 def ticks_add(ticks: int, delta: int) -> int:
     "Add a delta to a base number of ticks, performing wraparound at 2**29ms."
+    if delta <= -_TICKS_PERIOD/2 or delta >= _TICKS_PERIOD/2:
+        raise OverflowError("ticks interval overflow")
     return (ticks + delta) % _TICKS_PERIOD
 
 
