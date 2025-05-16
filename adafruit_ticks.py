@@ -53,7 +53,7 @@ _TICKS_HALFPERIOD = const(_TICKS_PERIOD // 2)
 #    board with time.monotonic_ns.
 
 try:
-    from supervisor import ticks_ms  # pylint: disable=unused-import
+    from supervisor import ticks_ms
 except (ImportError, NameError):
     import time
 
@@ -74,7 +74,7 @@ except (ImportError, NameError):
             intended for working with short term events like advancing an LED
             animation, not for long term events like counting down the time
             until a holiday."""
-            return _ticks_ms() & _TICKS_MAX  # pylint: disable=not-callable
+            return _ticks_ms() & _TICKS_MAX
 
     else:
         try:
