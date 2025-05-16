@@ -5,7 +5,8 @@
 
 import board
 import digitalio
-from adafruit_ticks import ticks_ms, ticks_add, ticks_less
+
+from adafruit_ticks import ticks_add, ticks_less, ticks_ms
 
 led = digitalio.DigitalInOut(board.LED)
 led.switch_to_output()
